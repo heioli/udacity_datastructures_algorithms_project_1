@@ -1,0 +1,122 @@
+Task0:
+=========
+Read in tasks:
+Reading in file and converting it to list are both of worst case complexity O(n)
+
+Printing contains only printing 1 row each --> O(1)
+
+Overall worst case complexity: O(n)
+
+Task1:
+=========
+Critical parts:
+-----------------
+# O(1)
+list_numbers_texts = []
+
+# O(n) + O(1) +O(1)
+for record in texts:
+    list_numbers_texts.append(record[0])
+    list_numbers_texts.append(record[1])
+
+# O(1)
+list_numbers_calls = []
+
+# O(n) + O(1) +O(1)
+for record in calls:
+    list_numbers_calls.append(record[0])
+    list_numbers_calls.append(record[1])
+
+# Extend of order O(k), set operation: O(n), len: O(1)
+unique_numbers = len(set(list_numbers_texts + list_numbers_calls))
+-----------------
+
+This leads to an overall worst case complexity of: O(n)
+
+Task2:
+=========
+Critical parts:
+-----------------
+
+for record in calls:
+    if record[0] in time_spent_on_phone_dict:
+        time_spent_on_phone_dict[record[0]] += int(record[3])
+    else:
+        time_spent_on_phone_dict[record[0]] = int(record[3])
+    if record[1] in time_spent_on_phone_dict:
+        time_spent_on_phone_dict[record[1]] += int(record[3])
+    else:
+        time_spent_on_phone_dict[record[1]] = int(record[3])
+
+max_caller_nr = max(time_spent_on_phone_dict,key=time_spent_on_phone_dict.get)
+max_caller_duration = time_spent_on_phone_dict[max_caller_nr]
+-----------------
+
+--> For loop worst case order: O(n)
+--> Dict in operation has complexity: O(n)
+--> max has worst case complexity: O(n)
+
+This leads to an overall worst case complexity of: O(n)
+
+Task3:
+=========
+
+Critical parts:
+-----------------
+########### Of constant order: O(1)
+def extract_prefix(number):
+  if '(' in number:
+    prefix = number.split(')')[0][1:]
+  elif " " in number:
+    prefix = number[0:3]
+  elif number[0:2] == '140':
+    prefix = '140'
+  else:
+    raise 'Unexpected number'
+  return prefix
+
+dict_unique_prefixes = {}
+
+########### for loop dominates: O(n)
+for record in calls:
+  if '(080)' in record[0]:
+    prefix = extract_prefix(record[1])
+    if prefix in dict_unique_prefixes:
+      dict_unique_prefixes[prefix] += 1
+    else:
+      dict_unique_prefixes[prefix] = 1
+
+########### sorting function is dominates: O(n*log(n))
+list_prefixes = sorted(list(dict_unique_prefixes.keys()))
+
+print('The numbers called by people in Bangalore have codes:', list_prefixes)
+
+total_calls = sum(dict_unique_prefixes.values())
+percentage_bangalore_bangalore = (dict_unique_prefixes['080'] / total_calls)*100
+-----------------
+
+This leads to an overall worst case complexity of: O(n*log(n))
+
+
+Task4:
+=========
+Critical parts:
+-----------------
+########### One time effort: O(1)
+set_outgoing_calls = set()
+no_telemarket = set()
+
+########### for loop of order O(n), adding elements to set: O(1)
+for records in calls:
+    set_outgoing_calls.add(records[0])
+    no_telemarket.add(records[1])
+
+for records in texts:
+    no_telemarket.add(records[0])
+    no_telemarket.add(records[1])
+
+########### This command is dominated by the sort function order: O(n*log(n))
+list_telemarketers = sorted(list(set_outgoing_calls - no_telemarket))
+-----------------
+
+This leads to an overall worst case complexity of: O(n*log(n))
